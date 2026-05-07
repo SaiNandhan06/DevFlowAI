@@ -1,60 +1,146 @@
 import Link from 'next/link'
 
+const FEATURES = [
+  {
+    num: '01',
+    title: 'AI-Generated Plan',
+    desc: 'Get a phased project plan tailored to your idea and experience level. No templates. Pure intelligence.',
+  },
+  {
+    num: '02',
+    title: 'Right Tools Only',
+    desc: 'We cut through the noise. You get only the best free AI tools, matched precisely to your stack.',
+  },
+  {
+    num: '03',
+    title: 'Ready-to-Use Prompts',
+    desc: 'Professional prompt templates for every tool in your workflow — no guessing, no wasted time.',
+  },
+]
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      {/* Nav */}
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-slate-800">
-        <span className="text-xl font-bold text-indigo-400">DevFlow AI</span>
-        <Link
-          href="/generate"
-          className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-5 py-2 rounded-full transition-colors"
-        >
+    <main className="min-h-screen bg-black text-white">
+
+      {/* ── Fixed Nav ────────────────────────────── */}
+      <nav className="nav-fixed">
+        <span className="text-sm font-bold tracking-widest uppercase text-white">DevFlow AI</span>
+        <div className="hidden md:flex items-center gap-8">
+          <Link href="/generate" className="text-sm text-[#808080] hover:text-white transition-colors">Generate</Link>
+          <Link href="#features" className="text-sm text-[#808080] hover:text-white transition-colors">Features</Link>
+        </div>
+        <Link href="/generate" className="btn-lime text-xs uppercase tracking-widest py-2.5 px-5">
           Try Free →
         </Link>
       </nav>
 
-      {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-6 py-32">
-        <div className="inline-block bg-indigo-900/40 border border-indigo-700/50 text-indigo-300 text-xs px-4 py-1.5 rounded-full mb-6">
-          AI-Powered Developer Workflow Advisor
-        </div>
-        <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 max-w-4xl">
-          From idea to{' '}
-          <span className="text-indigo-400">professional workflow</span>{' '}
-          in seconds
+      {/* ── Hero ─────────────────────────────────── */}
+      <section className="dot-grid min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-16 relative overflow-hidden">
+        {/* Ambient glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#D4FF3F]/5 blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-[#B692FE]/5 blur-[100px] pointer-events-none" />
+
+        <span className="tag-lavender mb-8 reveal">AI-Powered Developer Workflow Advisor</span>
+
+        <h1 className="text-mega mb-2 reveal reveal-delay-1">
+          FROM IDEA
         </h1>
-        <p className="text-slate-400 text-lg md:text-xl max-w-2xl mb-10">
-          Tell us your project idea. We generate a step-by-step workflow,
-          recommend the best free AI tools, and give you the exact prompts
-          to use — tailored to your experience level.
+        <h1 className="text-mega text-outlined mb-2 reveal reveal-delay-2">
+          TO WORKFLOW
+        </h1>
+        <h1 className="text-mega mb-10 reveal reveal-delay-3">
+          IN <span style={{ color: '#D4FF3F' }}>SECONDS</span>
+        </h1>
+
+        <p className="text-[#808080] text-lg md:text-xl max-w-xl mb-12 leading-relaxed reveal reveal-delay-4">
+          Tell us your project idea. We generate a step-by-step plan,
+          curate the best free AI tools, and hand you the exact prompts to use.
         </p>
-        <Link
-          href="/generate"
-          className="bg-indigo-600 hover:bg-indigo-500 text-white text-lg px-10 py-4 rounded-full font-semibold transition-colors shadow-lg shadow-indigo-900/50"
-        >
-          Generate Your Workflow — Free
-        </Link>
+
+        <div className="flex flex-col sm:flex-row gap-4 items-center reveal reveal-delay-5">
+          <Link href="/generate" className="btn-lime text-sm uppercase tracking-widest">
+            Generate Your Workflow
+          </Link>
+          <Link href="#features" className="btn-ghost text-sm uppercase tracking-widest">
+            See How It Works
+          </Link>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+          <span className="mono-label">Scroll</span>
+          <div className="w-px h-8 bg-gradient-to-b from-white/20 to-transparent" />
+        </div>
       </section>
 
-      {/* Features */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 px-8 pb-24 max-w-5xl mx-auto">
-        {[
-          { icon: '🧠', title: 'AI-Generated Plan', desc: 'Get a phased project plan tailored to your idea and experience level instantly.' },
-          { icon: '🛠️', title: 'Right Tools Only', desc: 'We recommend only the best free AI tools for each part of your stack.' },
-          { icon: '📋', title: 'Ready-to-Use Prompts', desc: ' professional prompt templates for every tool — no guessing required.' },
-        ].map((f) => (
-          <div key={f.title} className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-            <div className="text-3xl mb-4">{f.icon}</div>
-            <h3 className="text-white font-semibold text-lg mb-2">{f.title}</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
-          </div>
-        ))}
+      {/* ── Marquee ──────────────────────────────── */}
+      <div className="divider" />
+      <div className="py-5 overflow-hidden border-y border-white/5 select-none">
+        <div className="marquee-track">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="flex items-center gap-12 px-6">
+              {['AI Workflow', 'Dev Tools', 'Prompt Engineering', 'Phase Planning', 'Stack Advisor', 'Free Tools', 'AI Workflow', 'Dev Tools'].map((text, j) => (
+                <span key={j} className="text-sm font-medium tracking-widest uppercase text-[#333] whitespace-nowrap flex items-center gap-4">
+                  {text}
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4FF3F] inline-block" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Features ─────────────────────────────── */}
+      <section id="features" className="px-6 md:px-16 py-32 max-w-7xl mx-auto">
+        <div className="mb-20">
+          <span className="mono-label reveal">/ What We Do</span>
+          <h2 className="text-display mt-4 max-w-3xl reveal reveal-delay-1">
+            Everything you need to<br />
+            <span className="text-outlined">ship smarter.</span>
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {FEATURES.map((f, i) => (
+            <div
+              key={f.num}
+              className={`card-glass p-8 reveal reveal-delay-${i + 1}`}
+            >
+              <span className="mono-label block mb-6">{f.num}</span>
+              <h3 className="text-heading mb-4">{f.title}</h3>
+              <p className="text-[#808080] text-sm leading-relaxed">{f.desc}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* Footer */}
-      <footer className="text-center pb-10 text-slate-600 text-sm">
-        Built by Sainandhan · DevFlow AI v1.0
+      {/* ── CTA ──────────────────────────────────── */}
+      <section className="px-6 py-32 text-center relative overflow-hidden">
+        <div className="absolute inset-0 dot-grid opacity-40 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#D4FF3F]/8 blur-[100px] pointer-events-none" />
+
+        <div className="relative">
+          <span className="mono-label reveal">/ Get Started</span>
+          <h2 className="text-mega mt-4 mb-2 reveal reveal-delay-1">
+            BUILD
+          </h2>
+          <h2 className="text-mega text-outlined-lime mb-12 reveal reveal-delay-2">
+            SMARTER
+          </h2>
+          <Link href="/generate" className="btn-lime text-sm uppercase tracking-widest glow-lime reveal reveal-delay-3">
+            Generate Your Workflow — Free
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Footer ───────────────────────────────── */}
+      <div className="divider" />
+      <footer className="px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <span className="text-sm font-bold tracking-widest uppercase text-white">DevFlow AI</span>
+        <span className="mono-label">Built by Sainandhan · v1.0</span>
+        <div className="flex gap-6">
+          <Link href="/generate" className="text-sm text-[#808080] hover:text-white transition-colors">Generate</Link>
+        </div>
       </footer>
     </main>
   )

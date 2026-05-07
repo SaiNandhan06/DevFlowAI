@@ -27,6 +27,7 @@ export default function HomePage() {
         <span className="text-sm font-bold tracking-widest uppercase text-white">DevFlow AI</span>
         <div className="hidden md:flex items-center gap-8">
           <Link href="/generate" className="text-sm text-[#808080] hover:text-white transition-colors">Generate</Link>
+          <Link href="/resources" className="text-sm text-[#808080] hover:text-white transition-colors">Resources</Link>
           <Link href="#features" className="text-sm text-[#808080] hover:text-white transition-colors">Features</Link>
         </div>
         <Link href="/generate" className="btn-lime text-xs uppercase tracking-widest py-2.5 px-5">
@@ -114,6 +115,28 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Resources Teaser ───────────────────────── */}
+      <section className="px-6 md:px-16 py-12 max-w-7xl mx-auto">
+        <div className="card-glass p-10 flex flex-col md:flex-row items-center justify-between gap-8 reveal">
+          <div>
+            <span className="mono-label block mb-3">/ Resources Hub</span>
+            <h3 className="text-heading mb-3">
+              From Figma to production —<br />
+              <span style={{ color: '#D4FF3F' }}>all the free tools you need.</span>
+            </h3>
+            <p className="text-[#808080] text-sm leading-relaxed max-w-lg">
+              Figma AI → Figma-to-code → Claude for backend → deploy. Plus curated developer roadmaps from roadmap.sh.
+            </p>
+          </div>
+          <Link
+            href="/resources"
+            className="btn-lime text-sm uppercase tracking-widest whitespace-nowrap flex-shrink-0"
+          >
+            Browse Resources →
+          </Link>
+        </div>
+      </section>
+
       {/* ── CTA ──────────────────────────────────── */}
       <section className="px-6 py-32 text-center relative overflow-hidden">
         <div className="absolute inset-0 dot-grid opacity-40 pointer-events-none" />
@@ -140,6 +163,7 @@ export default function HomePage() {
         <span className="mono-label">Built by Sainandhan · v1.0</span>
         <div className="flex gap-6">
           <Link href="/generate" className="text-sm text-[#808080] hover:text-white transition-colors">Generate</Link>
+          <Link href="/resources" className="text-sm text-[#808080] hover:text-white transition-colors">Resources</Link>
         </div>
       </footer>
     </main>

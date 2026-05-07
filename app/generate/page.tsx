@@ -47,7 +47,9 @@ export default function GeneratePage() {
       {/* Nav */}
       <nav className="nav-fixed">
         <Link href="/" className="text-sm font-bold tracking-widest uppercase text-white">DevFlow AI</Link>
-        <span className="mono-label hidden md:block">/ Generate Workflow</span>
+        <div className="hidden md:flex items-center gap-8">
+          <Link href="/resources" className="text-sm text-[#808080] hover:text-white transition-colors">Resources</Link>
+        </div>
         <Link href="/" className="btn-ghost text-xs uppercase tracking-widest py-2 px-4">← Home</Link>
       </nav>
 

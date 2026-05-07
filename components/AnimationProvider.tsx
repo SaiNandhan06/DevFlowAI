@@ -44,7 +44,7 @@ export default function AnimationProvider({ children }: { children: React.ReactN
 
   // Scroll reveal — re-run on route change
   useEffect(() => {
-    const observe = () => {
+    const timer = setTimeout(() => {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -62,13 +62,7 @@ export default function AnimationProvider({ children }: { children: React.ReactN
         observer.observe(el)
       })
 
-      return observer
-    }
-
-    // Small delay to let the DOM render first
-    const timer = setTimeout(() => {
-      const obs = observe()
-      return () => obs.disconnect()
+      return () => observer.disconnect()
     }, 100)
 
     return () => clearTimeout(timer)

@@ -58,8 +58,8 @@ Respond ONLY in this exact JSON format, no extra text:
     const workflow = JSON.parse(clean)
 
     return NextResponse.json({ workflow })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Generate error:', error)
-    return NextResponse.json({ error: 'Failed to generate workflow' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to generate workflow', details: error?.message || error }, { status: 500 })
   }
 }

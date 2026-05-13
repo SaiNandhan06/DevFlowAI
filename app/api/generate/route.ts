@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { gemini } from '@/lib/ai'
+import { getRelevantRoadmaps } from '@/data/roadmaps'
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,10 +10,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Project idea is required' }, { status: 400 })
     }
 
+    const roadmapQuery = `${stack.join(' ')} ${idea}`
+    const relevantRoadmaps = getRelevantRoadmaps(roadmapQuery, 3)
+    const roadmapsContext = relevantRoadmaps.length > 0 
+      ? `\nHere are some relevant learning roadmaps from roadmap.sh that might help the developer. Feel free to include them in the 'references' section:\n${JSON.stringify(relevantRoadmaps, null, 2)}\n` 
+      : ''
+
     const prompt = `You are a senior full stack developer and technical advisor.
 
 A ${level} developer wants to build: "${idea}"
 Preferred stack areas: ${stack.join(', ')}
+${roadmapsContext}
+
+IMPORTANT: For the "prompts" section, act as an expert "Feedough AI Prompt Generator". Generate 3 to 5 highly detailed, advanced, copy-pasteable prompt templates that the user can feed into tools like ChatGPT, Cursor, Bolt, or v0 to accelerate their development. The prompts should follow advanced prompt engineering techniques (Persona, Context, Task, Format) and include placeholders (like [Insert specific detail]) where necessary.
 
 Respond ONLY in this exact JSON format, no extra text:
 
@@ -38,9 +48,9 @@ Respond ONLY in this exact JSON format, no extra text:
   ],
   "prompts": [
     {
-      "title": "prompt title",
-      "tool": "tool name",
-      "template": "the full prompt template"
+      "title": "prompt title (e.g. Architecture Setup Prompt)",
+      "tool": "Target Tool (e.g. Cursor / ChatGPT / v0)",
+      "template": "Act as an expert... [Highly detailed prompt template]"
     }
   ],
   "references": [

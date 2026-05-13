@@ -4,6 +4,32 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { Workflow } from '@/types'
+import { ReactFlow, Background, Controls, Node, Edge, Handle, Position } from '@xyflow/react'
+import '@xyflow/react/dist/style.css'
+
+const ObsidianNode = ({ data }: any) => {
+    return (
+        <div className="flex flex-col items-center justify-center -translate-y-1/2 -translate-x-1/2 cursor-pointer group">
+            {/* Invisible handles placed at the center so lines connect directly to the dot */}
+            <Handle type="target" position={Position.Top} className="opacity-0 pointer-events-none" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+            <div 
+                className="rounded-full transition-all duration-300 group-hover:scale-150" 
+                style={{ 
+                    width: data.size || 12, 
+                    height: data.size || 12, 
+                    backgroundColor: data.color || '#fff', 
+                    boxShadow: `0 0 20px ${data.color || '#ffffff'}60` 
+                }}
+            />
+            <div className="mt-2 text-[10px] font-medium text-white/50 whitespace-nowrap bg-[#0a0a0a]/80 px-2.5 py-1 rounded-lg backdrop-blur-md border border-white/5 group-hover:text-white group-hover:border-white/20 transition-all group-hover:-translate-y-1">
+                {data.label}
+            </div>
+            <Handle type="source" position={Position.Bottom} className="opacity-0 pointer-events-none" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+        </div>
+    )
+}
+
+const nodeTypes = { obsidian: ObsidianNode }
 
 type Tab = 'phases' | 'tools' | 'prompts' | 'refs'
 
@@ -12,6 +38,7 @@ export default function ResultsPage() {
     const [workflow, setWorkflow] = useState<Workflow | null>(null)
     const [copied, setCopied] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<Tab>('phases')
+    const [toolsViewMode, setToolsViewMode] = useState<'grid' | 'graph'>('graph')
 
     useEffect(() => {
         const saved = localStorage.getItem('devflow_workflow')
@@ -132,31 +159,138 @@ export default function ResultsPage() {
 
                 {/* TOOLS */}
                 {activeTab === 'tools' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(workflow.tools ?? []).map((tool, i) => (
-                            <a
-                                key={`tool-${i}`}
-                                href={tool.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="card-glass p-5 block group"
-                            >
-                                <div className="flex items-start justify-between mb-2 gap-2">
-                                    <span className="font-bold text-sm group-hover:text-[#D4FF3F] transition-colors leading-snug">{tool.name}</span>
-                                    <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest flex-shrink-0 ${tool.free
-                                            ? 'bg-emerald-500/10 border border-emerald-500/25 text-emerald-400'
-                                            : 'bg-orange-500/10 border border-orange-500/25 text-orange-400'
-                                        }`}>
-                                        {tool.free ? 'Free' : 'Paid'}
-                                    </span>
+                    <div className="flex flex-col gap-6">
+                        <div className="flex justify-between items-center bg-[#0a0a0a] p-3 rounded-xl border border-white/8">
+                            <span className="mono-label !mb-0 text-white/50 pl-2">Select your preferred view:</span>
+                            <div className="flex bg-white/5 p-1 rounded-lg border border-white/8">
+                                <button onClick={() => setToolsViewMode('grid')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-md transition-all ${toolsViewMode === 'grid' ? 'bg-[#D4FF3F] text-black' : 'text-white/50 hover:text-white'}`}>Blocks</button>
+                                <button onClick={() => setToolsViewMode('graph')} className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-md transition-all ${toolsViewMode === 'graph' ? 'bg-[#D4FF3F] text-black' : 'text-white/50 hover:text-white'}`}>Graph</button>
+                            </div>
+                        </div>
+
+                        {toolsViewMode === 'grid' ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {(workflow.tools ?? []).map((tool, i) => (
+                                    <a
+                                        key={`tool-${i}`}
+                                        href={tool.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="card-glass p-5 block group"
+                                    >
+                                        <div className="flex items-start justify-between mb-2 gap-2">
+                                            <span className="font-bold text-sm group-hover:text-[#D4FF3F] transition-colors leading-snug">{tool.name}</span>
+                                            <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest flex-shrink-0 ${tool.free
+                                                    ? 'bg-emerald-500/10 border border-emerald-500/25 text-emerald-400'
+                                                    : 'bg-orange-500/10 border border-orange-500/25 text-orange-400'
+                                                }`}>
+                                                {tool.free ? 'Free' : 'Paid'}
+                                            </span>
+                                        </div>
+                                        <span className="mono-label block mb-2">{tool.category}</span>
+                                        <p className="text-[#808080] text-xs leading-relaxed mb-4">{tool.useCase}</p>
+                                        <div className="flex items-center gap-1 text-[#444] group-hover:text-[#D4FF3F] transition-colors text-xs font-bold uppercase tracking-widest">
+                                            Visit →
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        ) : (() => {
+                            const nodeStyle = { background: 'transparent', border: 'none', padding: 0 }
+        
+                            const toolNodes: Node[] = [
+                                { id: 'dev-core', type: 'obsidian', position: { x: 500, y: 100 }, data: { label: 'Project Development', color: '#D4FF3F', size: 24 }, style: nodeStyle },
+                                
+                                { id: 'cat-code', type: 'obsidian', position: { x: 200, y: 300 }, data: { label: 'Code Generation', color: '#a855f7', size: 16 }, style: nodeStyle },
+                                { id: 'cat-ui', type: 'obsidian', position: { x: 500, y: 300 }, data: { label: 'UI/UX Design', color: '#3b82f6', size: 16 }, style: nodeStyle },
+                                { id: 'cat-research', type: 'obsidian', position: { x: 800, y: 300 }, data: { label: 'Research & Debugging', color: '#ec4899', size: 16 }, style: nodeStyle },
+                                
+                                // Top Free Tools (from theresanaiforthat)
+                                { id: 'tool-cursor', type: 'obsidian', position: { x: 100, y: 500 }, data: { label: 'Cursor (Free Tier)', color: '#ffffff', size: 10 }, style: nodeStyle },
+                                { id: 'tool-bolt', type: 'obsidian', position: { x: 300, y: 500 }, data: { label: 'Bolt.new (Free Tier)', color: '#ffffff', size: 10 }, style: nodeStyle },
+                                { id: 'tool-v0', type: 'obsidian', position: { x: 500, y: 500 }, data: { label: 'v0.dev (Free Tier)', color: '#ffffff', size: 10 }, style: nodeStyle },
+                                { id: 'tool-perplexity', type: 'obsidian', position: { x: 700, y: 500 }, data: { label: 'Perplexity AI (Free)', color: '#ffffff', size: 10 }, style: nodeStyle },
+                                { id: 'tool-chatgpt', type: 'obsidian', position: { x: 900, y: 500 }, data: { label: 'ChatGPT / Claude', color: '#ffffff', size: 10 }, style: nodeStyle },
+                            ]
+        
+                            const edgeStyle = { stroke: '#ffffff', strokeOpacity: 0.15, strokeWidth: 1.5 }
+                            const edgeType = 'straight'
+        
+                            const toolEdges: Edge[] = [
+                                { id: 'e1', source: 'dev-core', target: 'cat-code', type: edgeType, style: { stroke: '#a855f7', strokeOpacity: 0.4, strokeWidth: 2 } },
+                                { id: 'e2', source: 'dev-core', target: 'cat-ui', type: edgeType, style: { stroke: '#3b82f6', strokeOpacity: 0.4, strokeWidth: 2 } },
+                                { id: 'e3', source: 'dev-core', target: 'cat-research', type: edgeType, style: { stroke: '#ec4899', strokeOpacity: 0.4, strokeWidth: 2 } },
+                                
+                                { id: 'e4', source: 'cat-code', target: 'tool-cursor', type: edgeType, style: edgeStyle },
+                                { id: 'e5', source: 'cat-code', target: 'tool-bolt', type: edgeType, style: edgeStyle },
+                                { id: 'e6', source: 'cat-ui', target: 'tool-v0', type: edgeType, style: edgeStyle },
+                                { id: 'e7', source: 'cat-research', target: 'tool-perplexity', type: edgeType, style: edgeStyle },
+                                { id: 'e8', source: 'cat-research', target: 'tool-chatgpt', type: edgeType, style: edgeStyle },
+                            ]
+        
+                            // Dynamically map any extra tools generated by Gemini
+                            const dynamicToolsCount = workflow.tools?.length || 0;
+                            ;(workflow.tools || []).forEach((tool, idx) => {
+                                const id = `dynamic-${idx}`
+                                const isFree = tool.free
+                                
+                                // Arrange dynamic tools in a row at the bottom (Y=700)
+                                const totalWidth = 800;
+                                const spacing = dynamicToolsCount > 1 ? totalWidth / (dynamicToolsCount - 1) : 0;
+                                const x = dynamicToolsCount > 1 ? 100 + (idx * spacing) : 500;
+                                const y = 700;
+                                
+                                const color = isFree ? '#10b981' : '#f97316'
+        
+                                toolNodes.push({
+                                    id,
+                                    type: 'obsidian',
+                                    position: { x, y },
+                                    data: { label: `${tool.name} (${isFree ? 'Free' : 'Paid'})`, color, size: 8 },
+                                    style: nodeStyle
+                                })
+                                // Connect dynamic tools to core Project Development directly down the center
+                                toolEdges.push({
+                                    id: `dynamic-edge-${idx}`,
+                                    source: 'dev-core',
+                                    target: id,
+                                    type: edgeType,
+                                    style: { stroke: color, strokeOpacity: 0.2, strokeWidth: 1, strokeDasharray: '4 4' }
+                                })
+                            })
+        
+                            return (
+                                <div className="w-full h-[750px] border border-white/8 rounded-xl overflow-hidden relative bg-[#050505]">
+                                    <ReactFlow 
+                                        nodes={toolNodes}
+                                        edges={toolEdges}
+                                        nodeTypes={nodeTypes}
+                                        fitView
+                                        fitViewOptions={{ padding: 0.2 }}
+                                        colorMode="dark"
+                                        minZoom={0.2}
+                                        maxZoom={4}
+                                        className="cursor-grab active:cursor-grabbing"
+                                    >
+                                        <Controls className="fill-white !bg-[#111] border !border-white/10 opacity-50 hover:opacity-100 transition-opacity" showInteractive={false} />
+                                    </ReactFlow>
+                                    <div className="absolute top-6 left-6 flex flex-col gap-2 pointer-events-none">
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <div className="w-2 h-2 rounded-full bg-[#D4FF3F]"></div>
+                                            <span className="text-white/60 text-[10px]">Core Hub</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-[#a855f7]"></div>
+                                            <span className="text-white/60 text-[10px]">Categories</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-white"></div>
+                                            <span className="text-white/60 text-[10px]">Tools</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <span className="mono-label block mb-2">{tool.category}</span>
-                                <p className="text-[#808080] text-xs leading-relaxed mb-4">{tool.useCase}</p>
-                                <div className="flex items-center gap-1 text-[#444] group-hover:text-[#D4FF3F] transition-colors text-xs font-bold uppercase tracking-widest">
-                                    Visit →
-                                </div>
-                            </a>
-                        ))}
+                            )
+                        })()}
                     </div>
                 )}
 

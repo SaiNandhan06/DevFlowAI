@@ -164,6 +164,7 @@ export default function HomePage() {
         <div className="flex gap-6">
           <Link href="/generate" className="text-sm text-[#808080] hover:text-white transition-colors">Generate</Link>
           <Link href="/resources" className="text-sm text-[#808080] hover:text-white transition-colors">Resources</Link>
+          <a href="https://www.linkedin.com/in/sainandhan/" target="_blank" rel="noopener noreferrer" className="text-sm text-[#808080] hover:text-white transition-colors">LinkedIn</a>
         </div>
       </footer>
     </main>

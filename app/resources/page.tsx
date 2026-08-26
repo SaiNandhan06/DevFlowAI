@@ -293,19 +293,15 @@ export default function ResourcesPage() {
               Don&apos;t know what to learn next?
             </h2>
             <p className="text-[#808080] text-sm max-w-xl leading-relaxed">
-              These are interactive, community-driven roadmaps on{' '}
-              <a href="https://roadmap.sh" target="_blank" rel="noopener noreferrer" className="text-[#D4FF3F] hover:underline">roadmap.sh</a>
-              {' '}— the best resource for structured learning paths used by millions of developers.
+              These are interactive, structured learning paths to help you navigate your developer journey and build the right skills.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {ROADMAPS.map((rm, i) => (
-              <a
+              <Link
                 key={rm.role}
-                href={`https://roadmap.sh/${rm.path}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/roadmaps/${rm.path}`}
                 className={`card-glass p-6 flex items-start gap-4 group reveal reveal-delay-${Math.min(i + 1, 5)}`}
               >
                 <span className="text-2xl flex-shrink-0">{rm.emoji}</span>
@@ -318,20 +314,18 @@ export default function ResourcesPage() {
                     View Roadmap →
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
 
-          {/* roadmap.sh full link */}
+          {/* roadmaps full link */}
           <div className="mt-8 text-center reveal">
-            <a
-              href="https://roadmap.sh"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/roadmaps"
               className="btn-ghost text-xs uppercase tracking-widest py-3 px-8"
             >
-              Browse All Roadmaps on roadmap.sh →
-            </a>
+              Browse All Roadmaps →
+            </Link>
           </div>
         </section>
 

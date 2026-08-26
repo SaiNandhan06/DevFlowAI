@@ -234,11 +234,17 @@ export default function ResultsPage() {
                                 const id = `dynamic-${idx}`
                                 const isFree = tool.free
                                 
-                                // Arrange dynamic tools in a row at the bottom (Y=700)
-                                const totalWidth = 800;
-                                const spacing = dynamicToolsCount > 1 ? totalWidth / (dynamicToolsCount - 1) : 0;
-                                const x = dynamicToolsCount > 1 ? 100 + (idx * spacing) : 500;
-                                const y = 700;
+                                // Arrange dynamic tools in a grid above the core hub to prevent overlapping with static tools
+                                const cols = 4;
+                                const colIndex = idx % cols;
+                                const rowIndex = Math.floor(idx / cols);
+                                
+                                const itemsInThisRow = Math.min(cols, dynamicToolsCount - rowIndex * cols);
+                                const totalRowWidth = (itemsInThisRow - 1) * 220; // 220px horizontal spacing
+                                const startX = 500 - (totalRowWidth / 2);
+                                
+                                const x = startX + (colIndex * 220);
+                                const y = -100 - (rowIndex * 150); // Place above dev-core (y=100)
                                 
                                 const color = isFree ? '#10b981' : '#f97316'
         

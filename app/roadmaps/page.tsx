@@ -1,5 +1,21 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { ROLE_ROADMAPS, SKILL_ROADMAPS, BEST_PRACTICES } from '@/data/roadmaps'
+
+export const metadata: Metadata = {
+  title: 'Developer Roadmaps & Structured Learning Paths',
+  description: 'Explore curated role-based, skill-based, and best-practice roadmaps for Frontend, Backend, Full Stack, DevOps, AI Data Science, and React development.',
+  keywords: [
+    'developer roadmaps',
+    'frontend developer roadmap',
+    'backend developer roadmap',
+    'full stack roadmap',
+    'devops roadmap',
+    'ai engineer learning path',
+    'react roadmap',
+    'software engineering guides'
+  ],
+}
 
 export default function RoadmapsPage() {
   const categories = [

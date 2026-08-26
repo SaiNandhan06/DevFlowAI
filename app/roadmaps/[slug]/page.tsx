@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ALL_ROADMAPS, getRoadmapBySlug } from '@/data/roadmaps'
 
@@ -6,6 +7,29 @@ export function generateStaticParams() {
   return ALL_ROADMAPS.map((roadmap) => ({
     slug: roadmap.slug,
   }))
+}
+
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params
+  const roadmap = getRoadmapBySlug(params.slug)
+  if (!roadmap) return { title: 'Roadmap Not Found' }
+
+  return {
+    title: `${roadmap.title} Roadmap & Learning Path`,
+    description: `${roadmap.description} Generate an AI-powered personalized study and implementation workflow for ${roadmap.title}.`,
+    keywords: [
+      roadmap.title,
+      `${roadmap.title} roadmap`,
+      `${roadmap.title} tutorial`,
+      `${roadmap.title} developer path`,
+      'learning path',
+      'developer workflow'
+    ],
+    openGraph: {
+      title: `${roadmap.title} Developer Roadmap | DevFlow AI`,
+      description: roadmap.description,
+    },
+  }
 }
 
 export default async function RoadmapDetailPage(props: { params: Promise<{ slug: string }> }) {

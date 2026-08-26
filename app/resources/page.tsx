@@ -1,4 +1,21 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Curated AI Developer Tools, Figma-to-Code & Frameworks',
+  description: 'Explore curated, mostly-free developer tools for UI/UX (Figma AI, Galileo), Figma-to-code (Builder.io, Anima), Backend AI coding (Claude, Cursor, Copilot), Databases (Supabase, Neon), and AI integration.',
+  keywords: [
+    'ai developer tools',
+    'free coding tools',
+    'figma to react code',
+    'figma plugins for developers',
+    'claude ai backend',
+    'cursor ai',
+    'serverless postgres supabase neon',
+    'hackathon tools list',
+    'developer resources hub'
+  ],
+}
 
 const TOOL_CATEGORIES = [
   {
